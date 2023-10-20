@@ -19,3 +19,8 @@ built for a Kingspan PIR production line in Miami, Florida.
 
 Below is an example of the application in use: 
 https://github.com/mklimek25/Computer-Vision-System/assets/90988711/8f6055b4-a1f0-4d6f-ba86-4a8bc0baa41d
+
+The outputs collected by the vision system can be used in a variety of ways. To make an immediate impact to operators, I created a GUI for operators to monitor product quality in real time. Below is an image of the GUI collected during production:
+<img width="794" alt="CVS GUI" src="https://github.com/mklimek25/Computer-Vision-System/assets/90988711/a68f1117-10f7-4165-ac89-4951682ee506">
+
+Every 5 seconds, the GUI is updated with the averge values of all collected ouputs. At the same time, a SQL database is populated with these average values that perform by actively while the vision system is reading data from frames.

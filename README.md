@@ -16,3 +16,6 @@ estimates, we project that each vision system that we install will save Kingspan
 over 2400 square meters of scrap per year.
 I have attached a successful proof-of-concept vision system that displays a camera system that I had
 built for a Kingspan PIR production line in Miami, Florida.
+
+Below is an example of the application in use: 
+https://github.com/mklimek25/Computer-Vision-System/assets/90988711/8f6055b4-a1f0-4d6f-ba86-4a8bc0baa41d

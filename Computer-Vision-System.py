@@ -42,11 +42,11 @@ start_time = 0
 ab.execute("CREATE TABLE IF NOT EXISTS hawkeye_test (timestamp TIMESTAMP PRIMARY KEY, product STRING, date STRING,"
            " time STRING, west_height REAL, east_height REAL, west_hole_result STRING, east_hole_result STRING)")
 def angled_point_to_original(x_coordinate, y_coordinate, x0, y0, width, height, angle):
+            """This code takes the location of an angled analysis portion of an image and returns the coordinates of the
+    original image."""
     if angle < 0:
         angle = 360 + angle
-    """This code takes the location of an angled analysis portion of an image and returns the coordinates of the
-    original image.
-    Error: all backwards.. going to redo the process and see if I can get better results."""
+    
     y_coordinate = height - y_coordinate
     angle_in_radians = angle * math.pi / 180.0
     # a and b are variables found in our trig equation to find x and y origin points
@@ -60,12 +60,11 @@ def angled_point_to_original(x_coordinate, y_coordinate, x0, y0, width, height, 
            int(y0 + b * new_height - a * new_width))
     return pta
 
-def trig_function_y_value(y, img):  # Trig is often used with CV, but the y-axis is flipped. Function counters problem
-    output = img.shape[0] - y
+def trig_function_y_value(y, img):  # TRIG IS OFTEN USED WITH OPENCV, BUT Y-AXIS IS INVERSED, THIS FUNCTION AVOIDS ANY CONFUSION 
     return output
 
 def draw_angled_rec(x0, y0, width, height, angle, img):
-    """draws a rectangle that is tilted at a defined angle"""
+    # FUNCTION DRAWS A RECTANGLE THAT IS TILTED AT A DEFINED ANGLE. IMPORTANT FOR VISUAL DISPLAY
     _angle = angle * math.pi / 180.0
     b = math.cos(_angle) * 0.5
     a = math.sin(_angle) * 0.5
@@ -81,7 +80,8 @@ def draw_angled_rec(x0, y0, width, height, angle, img):
     cv2.line(img, pt1, pt2, (0, 0, 255), 3)
     cv2.line(img, pt2, pt3, (0, 0, 255), 3)
     cv2.line(img, pt3, pt0, (0, 0, 255), 3)
-def finding_frame(image, side):  # WE MUST CHANGE THIS TO THE VIDEOCAPTURE OBJEC
+def finding_frame(image, side):  # FUNCTION HELPS CALIBRATE THE CAMERAS. CAMERAS ALIGN TO CERTAIN CALIBRATION POINTS THAT I HAVE PLACED ON THE 
+    # PROCESS LINE (WHITE TAGS WITH REFLECTED LIGHT)
     global start_time
     global f_c
     global west_height_frame_bank  # where the height frame is recorded from
@@ -191,7 +191,7 @@ def finding_frame(image, side):  # WE MUST CHANGE THIS TO THE VIDEOCAPTURE OBJEC
         height_frame = crop_rotated_rectangle(img2, east_height_frame_bank)
     return height_frame, None
 
-class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
+class mainWindow(tkinter.Tk):  # CLASS USED TO GENERATE THE GUI USED BY OPERATORS
     """Will be the object that will perform as it is called"""
     def __init__(self):
         global x_set
@@ -276,26 +276,23 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
         # self.camera_read()
         # action
     def start_read(self):
-        print("THIS IS HAPPENING")
+        # BEGINNING THE READ FUNCTION WHEN THE START BUTTON IS PRESSED
         if self.product_type.get() != "":
             self.read_frame.set(True)
             self.after(5000, self.timed_change)
-        elif self.image_read_error.get() == True:  # This may not do jack shit :)
+        elif self.image_read_error.get() == True: 
             self.record_values.set(False)
             self.error_function()
     def camera_read(self):
         global fram_stop
-        print("HELLO")
-        """We are reading the two Cameras at this point. This function needs to change. It needs to change in a way
-        where the button starts the reading of the frames."""
+        # CAMERAS BEGIN READING AT THIS POINT IN THE DEMONSTRATION, FILES FOR EACH SIDE OF THE PROCESS ARE BEING READ.
         """The frames will be captured and presented, but the analysis will not take place until button is pressed"""
         self.set_product()
-
         file_name_west = '4-5_west_side1 copy.mp4'
         file_name_east = '4-5_east_side1 copy.mp4'
         cap = cv2.VideoCapture(file_name_west)
         cap1 = cv2.VideoCapture(file_name_east)
-        self.after(5000, self.timed_change)  # CALLING ON THE FUNCTION THAT COLLECTS DATA FROM THE CV APPLICATION
+        self.after(5000, self.timed_change)  # CALLING ON THE FUNCTION THAT COLLECTS AND STORES DATA FROM THE CV APPLICATION
         while cap.isOpened():
             self.record_values.set(True)
             self.read_frame.set(True)
@@ -318,13 +315,6 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
                     fram_stop += 1
             self.process("WEST")
             self.process("EAST")
-            # else:
-            #     cv2.imshow("west_frame_unread", frame)
-            #     cv2.imshow("east_frame_unread", frame1)
-            #     fram_stop = 0
-
-
-
             frametime=50
             if cv2.waitKey(frametime) & 0xFF == ord('q'):
                 break
@@ -357,7 +347,7 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
         self.title.configure(background='red', foreground='white')
         self.suggestions_label.configure(text='{}'.format(error_message), background='red', foreground='white')
     def suggestion(self):
-
+        # GOING TO UPDATE THE ERROR MESSAGES IN A LATER VERSION
         """Lets talk about what suggestions we can give:
         1. Heights too high
         2. Heights too low
@@ -365,7 +355,7 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
         4. Sideholes messed up
         5. Error Messages  """
     def timed_change(self):
-        """Shift every 5 seconds"""
+        # THE AUTO-UPDATE FUNCTION THAT COLLECTS, PRESENTS AND STORES DATA EVERY 5 SECONDS
         global x_set
         global y_set_east
         global y_set_west
@@ -417,7 +407,6 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
 
             west_height_label = "West Height:\n{}".format(west_height)
             if west_height > min_height and west_height < max_height:
-                # print("WE DID THIS")
                 self.west_height_label.configure(text=west_height_label, background='green', foreground='black')
             else:
                 self.west_height_label.configure(text=west_height_label, background='red', foreground='white')
@@ -425,7 +414,6 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
             east_height_label = "East Height:\n{}".format(east_height)
 
             if east_height > min_height and east_height < max_height:
-                # print("WE DID THIS")
                 self.east_height_label.configure(text=east_height_label, background='green', foreground='black')
             else:
                 self.east_height_label.configure(text=east_height_label, background='red', foreground='white')
@@ -443,9 +431,9 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
                 self.east_holes_label.configure(text=east_holes_label, background='red', foreground='white')
             suggestion = "welcome back"
             self.suggestions_label.configure(text=suggestion)
-            # ab.execute("INSERT INTO hawkeye_test (timestamp, product, date, time, west_height, east_height, west_hole_result"
-            #            ", east_hole_result) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (timestamp, product, date, time, west_height,
-            #                                                                    east_height, west_hole_result, east_hole_result))
+            ab.execute("INSERT INTO hawkeye_test (timestamp, product, date, time, west_height, east_height, west_hole_result"
+                       ", east_hole_result) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (timestamp, product, date, time, west_height,
+                                                                               east_height, west_hole_result, east_hole_result))
             if len(time_set) < 20:
                 y_set_east.append(east_height)
                 y_set_west.append(west_height)
@@ -457,14 +445,11 @@ class mainWindow(tkinter.Tk):  # CLASS USED TO DEFINE THE GUI USED BY OPERATORS
                 y_set_west.append(west_height)
                 del time_set[0]
                 time_set.append(now)
-            print(self.record_values.get())
-
             self.update()
         self.after(5000, self.timed_change)
-    def process(self, side):
+    def process(self, side):  # FUNCTION SETS THE CAMERAS AFTER STARTUP
         global frame_iteration
         global start_time
-
         """Contaains the motion of the camera_work. Should be helpful for understanding process flow"""
         if frame_iteration < 2:
             if side == "WEST":

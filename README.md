@@ -1,5 +1,4 @@
 # Computer-Vision-System
-Computer Vision System
 Allow me to introduce Project Hawkeye, a computer vision quality assurance tool that tracks quality metrics in real
 time to improve processes, increase customer satisfaction, and reduce waste for production processes
 worldwide. The project is based on groundbreaking technology advancements made in the last 10 years
